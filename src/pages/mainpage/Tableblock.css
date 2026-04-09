@@ -1,0 +1,11 @@
+.table-container {
+  flex: 1 1 auto;
+  width: 80%;             /* ограничиваем ширину контейнера */        /* высота контейнера */
+  margin: 20px auto;      /* центрируем по горизонтали */
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow-y: auto;       /* вертикальный скролл для строк */
+  overflow-x: hidden;       /* горизонтальный скролл при большой ширине таблицы */
+  background-color: #f8f8f8;
+}

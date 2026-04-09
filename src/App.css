@@ -1,21 +1,24 @@
+#root {
+  height: 100%;
+}
+
 .App {
   text-align: center;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
 }
+
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -35,4 +38,14 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+html {
+  /* Плавная прокрутка для всей страницы */
+  scroll-behavior: smooth;
+}
+
+/* Опционально: отступ сверху, чтобы шапка не перекрывала заголовок секции */
+section {
+  scroll-margin-top: 80px; /* Высота твоего хедера */
 }

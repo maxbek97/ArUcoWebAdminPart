@@ -1,0 +1,98 @@
+.footer {
+  background-color: #292929; /* Чуть светлее хедера, чтобы отделить контент */
+  padding: 15px 20px;
+  color: #7e7e7e; /* Серый текст для второстепенной информации */
+  font-family: sans-serif;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.footer-content {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+/* Соцсети */
+.footer-socials {
+  display: flex;
+  gap: 15px;
+}
+
+
+/* Логотипы */
+.footer-logos {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  opacity: 0.8;
+}
+
+
+.val-logo-small {
+  font-size: 24px;
+  color: #1382eb;
+  font-weight: bold;
+}
+
+/* Текст и ссылки */
+.footer-copyright {
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+.footer-legal-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.footer-legal-link {
+  color: white;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.footer-legal-link:hover {
+  background-color: #333;
+  border-radius: 4px;
+}
+
+/* Рейтинг */
+.age-rating {
+  border: 1px solid #7e7e7e;
+  padding: 5px 10px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.social-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  background-color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.social-svg-icon {
+  width: 20px;
+  height: 20px;
+  /* Если иконки черные, можно сделать их белыми программно: */
+  filter: brightness(0) invert(1); 
+}
+
+.social-link:hover .social-icon-wrapper {
+  background-color: #0d5fac;
+  transform: translateY(-3px);
+}
