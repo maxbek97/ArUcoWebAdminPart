@@ -67,3 +67,127 @@
   color: #111;
   transform: translateY(-2px);
 }
+
+.dict-button {
+  font-family: inherit;
+  background: transparent;
+  border: none;            /* ❌ убрали обводку */
+  outline: none; 
+  color: #eee;
+  cursor: pointer;
+  font-weight: 700;
+  text-decoration: none;
+  text-transform: uppercase;
+  width: 150px;           /* 🔥 фикс ширина */
+  white-space: nowrap;    /* не переносить */
+  overflow: hidden;
+  text-overflow: ellipsis; /* ... если длинное */
+}
+
+/* 🔥 Выпадающий блок */
+.dict-dropdown {
+  position: fixed;
+  top: 80px; /* высота header */
+  left: 0;
+  width: 100%;
+  background-color: #1a1a1a;
+  padding: 20px 40px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 🔥 4 столбца */
+  gap: 15px;
+
+  transform: translateY(-20px);
+  opacity: 0;
+  pointer-events: none;
+
+  transition: all 0.25s ease;
+
+  z-index: 110;
+  border-bottom: 1px solid #333;
+}
+
+.dict-dropdown.open {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 🔥 ГРИД С ОТДЕЛЬНОЙ АНИМАЦИЕЙ */
+.dict-grid {
+  display: grid;
+  grid-template-columns: repeat(4, max-content);
+  gap: 15px 45px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.2s ease 0.15s; /* задержка */
+}
+
+/* кнопки появляются ПОСЛЕ фона */
+.dict-dropdown.open .dict-grid {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+  .dict-grid {
+    grid-template-columns: repeat(3, max-content);
+  }
+  .logo-placeholder {
+    display: none;
+  }
+
+  .header-container {
+    padding: 0 15px;
+    justify-content: center;
+    gap: 20px;               
+  }
+
+  .header-nav {
+    gap: 10px;
+  }
+
+  .header-actions {
+    display: flex;
+  }
+
+  .dict-button {
+    width: 140px;
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  .action-button {
+    padding: 10px 15px;
+    font-size: 12px;
+  }
+
+}
+
+@media (max-width: 400px) {
+  .dict-grid {
+    grid-template-columns: repeat(2, max-content);
+  }
+}
+
+@media (max-width: 300px) {
+  .dict-grid {
+    grid-template-columns: repeat(1, max-content);
+  }
+}
+
+/* Кнопки внутри */
+.dict-item {
+  background-color: #ffffff00;
+  color: rgb(63, 63, 63);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: 0.2s;
+  font-family: Italic, Geneva, Tahoma, sans-serif;
+  font-weight: 400;
+}
+
+.dict-item:hover ,.dict-button:hover {
+  color: #1382eb;
+  transition: 0.5s;
+}

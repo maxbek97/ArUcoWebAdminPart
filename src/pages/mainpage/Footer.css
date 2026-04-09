@@ -6,6 +6,11 @@
   text-align: center;
   flex-shrink: 0;
 }
+@media (max-width: 600px) {
+  .footer {
+    display: none;
+  }
+}
 
 .footer-content {
   max-width: 800px;
