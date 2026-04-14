@@ -82,6 +82,25 @@
   white-space: nowrap;    /* не переносить */
   overflow: hidden;
   text-overflow: ellipsis; /* ... если длинное */
+  display: flex;              /* 🔥 важно */
+  align-items: center;
+  justify-content: space-around;
+}
+
+.dict-dot-button {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+
+  flex-shrink: 0;
+
+  background-color: transparent;
+}
+
+/* активное состояние */
+.dict-dot-button.active {
+  background-color: #1382eb;
+  box-shadow: 0 0 6px rgba(19, 130, 235, 0.6);
 }
 
 /* 🔥 Выпадающий блок */
@@ -185,7 +204,25 @@
   transition: 0.2s;
   font-family: Italic, Geneva, Tahoma, sans-serif;
   font-weight: 400;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
+
+.dict-item::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: transparent;
+  margin-left: 10px;
+}
+
+.dict-item.active::after {
+  background-color: #1382eb;
+  box-shadow: 0 0 6px rgba(19, 130, 235, 0.6);
+}
+
 
 .dict-item:hover ,.dict-button:hover {
   color: #1382eb;

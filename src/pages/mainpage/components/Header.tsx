@@ -5,12 +5,30 @@ import '../Header.css';
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedDict, setSelectedDict] = useState("Тестовый словарь");
+  const [selectedDict, setSelectedDict] = useState("");
+  const [currentDict, setCurrentDict] = useState("");   // активный с сервера
+  const [dictionaries, setDictionaries] = useState<string[]>([]);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  
+  useEffect(() => {
+    const fetchDictionaries = async () => {
+      try {
+        const response = await fetch('/api/admin/dictionaries');
+        const data = await response.json();
+
+        setDictionaries(data.dict_names || []);
+		setCurrentDict(data.current_dict || "");
+        setSelectedDict(data.current_dict || "");
+      } catch (error) {
+        console.error("Ошибка загрузки словарей:", error);
+      }
+    };
+
+    fetchDictionaries();
+  }, []);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -32,17 +50,29 @@ const Header: React.FC = () => {
   };
 
 
-  const dictionaries = [
-    "Словарь 1","Словарь 2","Словарь 3","Словарь 4",
-    "Словарь 5","Словарь 6","Словарь 7","Словарь 8",
-    "Словарь 9","Словарь 10","Словарь 11","Словарь 12",
-    "Словарь 13","Словарь 14","Словарь 15","Словарь 16",
-  ];
-  
 
-  const handleAction = () => {
-      //Тут потом будет вызываь эндпоинт для рофла
-  };
+	const handleAction = async () => {
+		if (selectedDict === currentDict) return;
+	try {
+		const response = await fetch('/api/admin/switch-dictionary', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ dict_name: selectedDict }),
+		});
+
+		if (!response.ok) {
+		throw new Error("Ошибка переключения словаря");
+		}
+
+		// 🔥 просто перезагружаем страницу
+		window.location.reload();
+
+	} catch (error) {
+		console.error("Ошибка переключения словаря:", error);
+	}
+	};
 
   return (
     <div>
@@ -55,8 +85,15 @@ const Header: React.FC = () => {
               className="dict-button"
               onClick={() => setIsOpen(!isOpen)}
             >
-              {selectedDict}
-            </button>
+			<span className="dict-text">
+    			{selectedDict}
+  			</span>
+			<span
+				className={`dict-dot-button ${
+				selectedDict === currentDict ? "active" : ""
+				}`}
+			/>
+		</button>
         </nav>
 
         {/* ПРАВАЯ ЧАСТЬ: Кнопка */}
@@ -64,22 +101,27 @@ const Header: React.FC = () => {
           <ActionButton text="Применить" onClick={handleAction} />
         </div>
       </header>
-        <div 
+        <div
           ref={dropdownRef}
           className={`dict-dropdown ${isOpen ? "open" : ""}`}
         >
           <div className='dict-grid'>
-            {dictionaries.map((dict, index) => (
-              <button
-                key={index}
-                className="dict-item"
-                onClick={
-                  () => handleSelect(dict)
-                }
-              >
-                {dict}
+            {dictionaries.map((dict, index) => {
+              	const isActive = currentDict.trim() === dict.trim();
+
+            	return (
+              		<button
+						key={index}
+						className={`dict-item ${isActive ? "active" : ""}`}
+						onClick={
+							() => handleSelect(dict)
+						}
+					>
+						<span className="dict-label">{dict}</span>
+						{isActive && <span className="dict-dot" />}
               </button>
-            ))}
+				);
+			})}
           </div>
         </div>
     </div>
