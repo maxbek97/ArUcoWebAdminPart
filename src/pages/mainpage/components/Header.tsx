@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import NavButton from './NavButton';
 import ActionButton from './ActionButton';
 import '../Header.css';
+import AddMarkerModal from './modals/AddMarkerModal';
 
 type HeaderProps = {
   selectedDict: string;
@@ -13,7 +14,7 @@ const Header: React.FC<HeaderProps> = ({selectedDict, setSelectedDict, setFilter
   const [isOpen, setIsOpen] = useState(false);
   const [currentDict, setCurrentDict] = useState("");
   const [dictionaries, setDictionaries] = useState<string[]>([]);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -91,15 +92,21 @@ const Header: React.FC<HeaderProps> = ({selectedDict, setSelectedDict, setFilter
               className="dict-button"
               onClick={() => setIsOpen(!isOpen)}
             >
-			<span className="dict-text">
-    			{selectedDict}
-  			</span>
-			<span
-				className={`dict-dot-button ${
-				selectedDict === currentDict ? "active" : ""
-				}`}
-			/>
-		</button>
+            <span className="dict-text">
+                {selectedDict}
+              </span>
+            <span
+              className={`dict-dot-button ${
+              selectedDict === currentDict ? "active" : ""
+              }`}
+            />
+		      </button>
+          <button
+              className="dict-button"
+              onClick={() => setIsModalOpen(true)}
+            >
+            <span className="dict-text">Новая метка</span>
+		      </button>
         </nav>
 
         {/* ПРАВАЯ ЧАСТЬ: Кнопка */}
@@ -130,6 +137,13 @@ const Header: React.FC<HeaderProps> = ({selectedDict, setSelectedDict, setFilter
 			})}
           </div>
         </div>
+
+        {isModalOpen && (
+          <AddMarkerModal
+            dictionaries={dictionaries}
+            onClose={() => setIsModalOpen(false)}
+          />
+        )}
     </div>
   );
 };
