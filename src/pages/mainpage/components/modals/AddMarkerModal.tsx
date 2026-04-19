@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import './AddMarkerModal.css'
+import './GlobalMarkerModal.css'
 import Toast from "../Toast";
 
 type Props = {

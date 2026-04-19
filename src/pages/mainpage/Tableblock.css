@@ -37,6 +37,7 @@
   border-collapse: collapse;
   color: white;
   font-size: 14px;
+  table-layout: fixed;
 }
 
 /* заголовки */

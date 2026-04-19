@@ -1,6 +1,8 @@
 import React from "react";
 import '../Tableblock.css';
 import { useState, useEffect } from "react";
+import MarkerModal from "./modals/MarkerModal";
+
 type Props = {
   currentDict: string;
   filterEnabled: boolean;
@@ -9,6 +11,10 @@ type Props = {
 function TableBlock({currentDict, filterEnabled}: Props) {
   const [rawData, setRawData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedMarker, setSelectedMarker] = useState<null | {
+  dict: string;
+  id: number;
+}>(null);
   const sortData = (data: any[]) => {
   return [...data].sort((a, b) => {
     if (a.dict < b.dict) return -1;
@@ -99,7 +105,14 @@ function TableBlock({currentDict, filterEnabled}: Props) {
 
         <tbody>
           {tableData.map((row, index) => (
-            <tr key={index}>
+            <tr
+            key={index}
+            onClick={() => {
+            setSelectedMarker({
+              dict: row.dict,
+              id: row.id,
+              });
+            }}>
               <td>{row.dict}</td>
               <td>{row.id}</td>
               <td>{row.load}</td>
@@ -108,6 +121,13 @@ function TableBlock({currentDict, filterEnabled}: Props) {
           ))}
         </tbody>
       </table>
+      {selectedMarker && (
+        <MarkerModal
+          dictionary={selectedMarker.dict}
+          markerId={selectedMarker.id}
+          onClose={() => setSelectedMarker(null)}
+        />
+      )}
     </div>
   );
 }

@@ -1,36 +1,3 @@
-/* ========================= */
-/* MODAL */
-/* ========================= */
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(4px);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  z-index: 200;
-}
-
-.modal {
-  width: 520px;
-  background: #111;
-  border: 1px solid #2a2a2a;
-  border-radius: 10px;
-
-  padding: 25px;
-  color: #eee;
-
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-
-  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-}
-
 /* заголовок */
 .modal h2 {
   margin: 0;
@@ -39,73 +6,8 @@
   letter-spacing: 1px;
 }
 
-/* поля */
-.modal input,
-.modal select,
-.modal textarea {
-  background: #1a1a1a;
-  border: 1px solid #333;
-  color: #eee;
 
-  padding: 10px;
-  border-radius: 6px;
 
-  outline: none;
-  transition: 0.2s;
-  box-sizing: border-box;
-}
-
-.modal input:focus,
-.modal select:focus,
-.modal textarea:focus {
-  border-color: #1382eb;
-  box-shadow: 0 0 6px rgba(19, 130, 235, 0.4);
-}
-
-/* textarea фикс */
-.modal textarea {
-  resize: none; /* ❌ запрещаем растягивание */
-  max-height: 120px;
-}
-
-/* кнопки */
-.modal-actions {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.modal-actions button {
-  padding: 10px 14px;
-  border: none;
-  cursor: pointer;
-  font-weight: 700;
-  text-transform: uppercase;
-  border-radius: 6px;
-}
-
-/* primary */
-.btn-primary {
-  background: #1382eb;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #0f6ed1;
-}
-
-/* cancel */
-.btn-secondary {
-  background: transparent;
-  border: 1px solid #333;
-  color: #aaa;
-}
-
-.btn-secondary:hover {
-  border-color: #1382eb;
-  color: #1382eb;
-}
 
 .form-group {
   display: flex;
@@ -113,25 +15,3 @@
   gap: 6px;
 }
 
-.form-group label {
-  font-size: 12px;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-align: left;
-}
-
-.coord-tile {
-    flex: 1;
-}
-
-.coord-tile input {
-  width: 100%;
-}
-
-.coord-row {
-    justify-content: space-between;
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-}
