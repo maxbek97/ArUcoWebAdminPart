@@ -1,112 +1,56 @@
 import React from "react";
 import '../Tableblock.css';
+import { useState, useEffect } from "react";
+type Props = {
+  currentDict: string;
+  filterEnabled: boolean;
+};
 
-function TableBlock() {
+function TableBlock({currentDict, filterEnabled}: Props) {
+  const [rawData, setRawData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const sortData = (data: any[]) => {
+  return [...data].sort((a, b) => {
+    if (a.dict < b.dict) return -1;
+    if (a.dict > b.dict) return 1;
+    return a.id - b.id;
+  });
+};
 
-  const rawData = [
-    {
-      dictionary_name: "DICT_4X4_100",
-      marker_id: 7,
-      payload_type: "model",
-      payload: { src: "robot.glb", start_position: [0, 0, 0] }
-    },
-    {
-      dictionary_name: "DICT_4X4_100",
-      marker_id: 8,
-      payload_type: "text",
-      payload: { value: "Hello world" }
-    },
-    {
-      dictionary_name: "DICT_5X5_50",
-      marker_id: 15,
-      payload_type: "model",
-      payload: { src: "car.glb", start_position: [1, 2, 3] }
-    },
-    {
-      dictionary_name: "DICT_5X5_50",
-      marker_id: 16,
-      payload_type: "text",
-      payload: { value: "Car marker" }
-    },
-    {
-      dictionary_name: "DICT_6X6_250",
-      marker_id: 22,
-      payload_type: "text",
-      payload: { value: "Test label" }
-    },
-    {
-      dictionary_name: "DICT_4X4_100",
-      marker_id: 8,
-      payload_type: "text",
-      payload: { value: "Hello world" }
-    },
-    {
-      dictionary_name: "DICT_5X5_50",
-      marker_id: 15,
-      payload_type: "model",
-      payload: { src: "car.glb", start_position: [1, 2, 3] }
-    },
-    {
-      dictionary_name: "DICT_5X5_50",
-      marker_id: 16,
-      payload_type: "text",
-      payload: { value: "Car marker" }
-    },
-    {
-      dictionary_name: "DICT_6X6_250",
-      marker_id: 22,
-      payload_type: "text",
-      payload: { value: "Test label" }
-    },
-    {
-      dictionary_name: "DICT_4X4_100",
-      marker_id: 8,
-      payload_type: "text",
-      payload: { value: "Hello world" }
-    },
-    {
-      dictionary_name: "DICT_5X5_50",
-      marker_id: 15,
-      payload_type: "model",
-      payload: { src: "car.glb", start_position: [1, 2, 3] }
-    },
-    {
-      dictionary_name: "DICT_5X5_50",
-      marker_id: 16,
-      payload_type: "text",
-      payload: { value: "Car marker" }
-    },
-    {
-      dictionary_name: "DICT_6X6_250",
-      marker_id: 22,
-      payload_type: "text",
-      payload: { value: "Test label" }
-    },
-    {
-      dictionary_name: "DICT_4X4_100",
-      marker_id: 8,
-      payload_type: "text",
-      payload: { value: "Hello world" }
-    },
-    {
-      dictionary_name: "DICT_5X5_50",
-      marker_id: 15,
-      payload_type: "model",
-      payload: { src: "car.glb", start_position: [1, 2, 3] }
-    },
-    {
-      dictionary_name: "DICT_5X5_50",
-      marker_id: 16,
-      payload_type: "text",
-      payload: { value: "Car marker" }
-    },
-    {
-      dictionary_name: "DICT_6X6_250",
-      marker_id: 22,
-      payload_type: "text",
-      payload: { value: "Test label" }
+  const filterData = (data: any[]) => {
+    if (!filterEnabled) return data;
+    if (!currentDict) return data;
+    return data.filter(item => item.dict?.trim() === currentDict?.trim());
+  };
+
+
+  useEffect(() => {
+    const fetchMarkers = async () => {
+      try {
+        const response = await fetch('/api/admin/markers');
+        const data = await response.json();
+
+        setRawData(data || []);
+      } catch (error) {
+        console.error("Ошибка загрузки маркеров:", error);
+        setRawData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMarkers();
+  }, []);
+  
+    if (rawData.length === 0) {
+      return (
+        <div className="table-container empty">
+          <div className="empty-text">
+            База данных пустует 👀
+          </div>
+        </div>
+      );
     }
-  ];
 
   const normalizeData = (data: any[]) => {
     return data.map(item => {
@@ -121,13 +65,25 @@ function TableBlock() {
       return {
         dict: item.dictionary_name,
         id: item.marker_id,
-        load: item.payload_type, // потом подставишь
+        load: item.payload_type,
         value: displayValue
       };
     });
   };
 
-  const tableData = normalizeData(rawData);
+    const normalized = normalizeData(rawData);
+    const filtered = filterData(normalized);
+    const tableData = sortData(filtered);
+
+    if (tableData.length === 0) {
+      return (
+        <div className="table-container empty">
+          <div className="empty-text">
+            У данного словаря нет маркеров 👀
+          </div>
+        </div>
+      );
+    }
 
   return (
     <div className="table-container">

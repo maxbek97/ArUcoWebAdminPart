@@ -71,6 +71,16 @@
   transform: scale(1.01);
 }
 
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-text {
+  color: #777;
+  font-size: 16px;
+}
 
 /* ========================= */
 /* 📱 АДАПТИВ */

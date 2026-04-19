@@ -3,10 +3,15 @@ import NavButton from './NavButton';
 import ActionButton from './ActionButton';
 import '../Header.css';
 
-const Header: React.FC = () => {
+type HeaderProps = {
+  selectedDict: string;
+  setSelectedDict: (dict: string) => void;
+  setFilterEnabled: (value: boolean) => void;
+};
+
+const Header: React.FC<HeaderProps> = ({selectedDict, setSelectedDict, setFilterEnabled}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedDict, setSelectedDict] = useState("");
-  const [currentDict, setCurrentDict] = useState("");   // активный с сервера
+  const [currentDict, setCurrentDict] = useState("");
   const [dictionaries, setDictionaries] = useState<string[]>([]);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -19,7 +24,7 @@ const Header: React.FC = () => {
         const data = await response.json();
 
         setDictionaries(data.dict_names || []);
-		setCurrentDict(data.current_dict || "");
+		    setCurrentDict(data.current_dict || "");
         setSelectedDict(data.current_dict || "");
       } catch (error) {
         console.error("Ошибка загрузки словарей:", error);
@@ -47,6 +52,7 @@ const Header: React.FC = () => {
   const handleSelect = (dict: string) => {
     setSelectedDict(dict);
     setIsOpen(false);
+    setFilterEnabled(true);
   };
 
 
