@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import './AddMarkerModal.css'
+import Toast from "../Toast";
+
 type Props = {
   dictionaries: string[];
   onClose: () => void;
 };
 
 const AddMarkerModal: React.FC<Props> = ({ dictionaries, onClose }) => {
+    const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [dict, setDict] = useState("");
   useEffect(() => {
   if (dictionaries.length > 0 && dict === "") {
@@ -62,15 +65,19 @@ const handleSubmit = async () => {
 
     if (!res.ok) {
       const err = await res.json();
-      alert(err.detail || "Ошибка сервера");
+      setToast({ message: err.detail || "Ошибка сервера", type: "error" });
       return;
     }
 
+
+    setToast({ message: "Marker created", type: "success" });
+    setTimeout(() => {
     onClose();
-    window.location.reload();
+  window.location.reload();
+}, 2000); // 2 секунды
 
   } catch (e: any) {
-    alert("Ошибка сети: " + e.message);
+    setToast({ message: e.message || "Ошибка сервера", type: "error" });
   }
 };
 
@@ -181,6 +188,13 @@ const handleSubmit = async () => {
                 <button className="btn-primary" onClick={handleSubmit}>Создать</button>
             </div>
         </div>
+        {toast && (
+            <Toast
+                message={toast.message}
+                type={toast.type}
+                onClose={() => setToast(null)}
+            />
+)}
     </div>
   );
 };
