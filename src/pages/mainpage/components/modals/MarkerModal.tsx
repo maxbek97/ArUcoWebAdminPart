@@ -20,6 +20,7 @@ const MarkerModal: React.FC<Props> = ({ dictionary, markerId, onClose }) => {
   // поля
     const [value, setValue] = useState("");
     const [source, setSource] = useState("");
+    const [file, setFile] = useState<File | null>(null);
     const [x, setX] = useState("");
     const [y, setY] = useState("");
     const [z, setZ] = useState("");
@@ -27,15 +28,15 @@ const MarkerModal: React.FC<Props> = ({ dictionary, markerId, onClose }) => {
     const numberRegex = /^-?\d*\.?\d*$/;
 
     const handleTypeChange = (newType: "text" | "model") => {
-  setType(newType);
+      setType(newType);
 
-  if (newType === "text") {
-    setSource("");
-    setX(""); setY(""); setZ("");
-  } else {
-    setValue("");
-  }
-};
+      if (newType === "text") {
+        setSource("");
+        setX(""); setY(""); setZ("");
+      } else {
+        setValue("");
+      }
+    };
 
   // 🔥 загрузка маркера
   useEffect(() => {
@@ -66,36 +67,39 @@ const MarkerModal: React.FC<Props> = ({ dictionary, markerId, onClose }) => {
     };
 
     fetchMarker();
-  }, []);
+  }, [dictionary, markerId]);
 
   // 🔥 UPDATE
   const handleUpdate = async () => {
-    let payload;
+    const formData = new FormData();
+
+    // Поля для MarkerForm (Depends)
+    formData.append("dictionary_name", dictionary);
+    formData.append("marker_id", String(markerId));
+    formData.append("payload_type", type);
+
+    let payloadData = {};
 
     if (type === "text") {
-      payload = {
-        dictionary_name: dictionary,
-        marker_id: markerId,
-        payload_type: "text",
-        payload: { value },
-      };
+      payloadData = { value };
     } else {
-      payload = {
-        dictionary_name: dictionary,
-        marker_id: markerId,
-        payload_type: "model",
-        payload: {
-          src: source,
-          start_position: [Number(x), Number(y), Number(z)],
-        },
+      payloadData = {
+        start_position: [Number(x), Number(y), Number(z)],
       };
+
+      if (!file) {
+        setToast({ message: "Необходимо выбрать файл модели", type: "error" });
+        return;
+      }
+      formData.append("file", file);
     }
+
+    formData.append("payload", JSON.stringify(payloadData));
 
     try {
       const res = await fetch(`/api/admin/markers/?dictionary_name=${dictionary}&marker_id=${markerId}`, {
-        method: "PATCH", // 🔥 важно
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        method: "PATCH",
+        body: formData,
       });
 
       if (!res.ok) {
@@ -143,7 +147,7 @@ const MarkerModal: React.FC<Props> = ({ dictionary, markerId, onClose }) => {
     }
   };
 
-  if (loading) return <div className="modal-overlay">Loading...</div>;
+  if (loading) return <div className="modal-overlay">Загрузка...</div>;
 
   return (
     <div className="modal-overlay">
@@ -187,12 +191,16 @@ const MarkerModal: React.FC<Props> = ({ dictionary, markerId, onClose }) => {
         {type === "model" && (
           <>
             <div className="form-group">
-              <label>Источник:</label>
-              <input
-                disabled={!isEdit}
-                value={source}
-                onChange={(e) => setSource(e.target.value)}
-              />
+              <label>Файл модели {isEdit && "(загрузите новый)"}:</label>
+              {!isEdit ? (
+                <div className="static-value">{source}</div>
+              ) : (
+                <input
+                  type="file"
+                  accept=".glb"
+                  onChange={(e) => e.target.files && setFile(e.target.files[0])}
+                />
+              )}
             </div>
 
             <div className="form-group">

@@ -16,7 +16,7 @@ function Mainpage() {
         setFilterEnabled={setFilterEnabled}
         />
       <TableBlock
-        currentDict = {selectedDict}
+        selectedDict = {selectedDict}
         filterEnabled={filterEnabled}
         />
       <Footer/>

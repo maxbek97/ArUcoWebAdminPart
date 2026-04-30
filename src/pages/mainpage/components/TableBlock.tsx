@@ -4,36 +4,37 @@ import { useState, useEffect } from "react";
 import MarkerModal from "./modals/MarkerModal";
 
 type Props = {
-  currentDict: string;
+  selectedDict: string;
   filterEnabled: boolean;
 };
 
-function TableBlock({currentDict, filterEnabled}: Props) {
+function TableBlock({selectedDict, filterEnabled}: Props) {
   const [rawData, setRawData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMarker, setSelectedMarker] = useState<null | {
-  dict: string;
-  id: number;
-}>(null);
+    dict: string;
+    id: number;
+  }>(null);
+
   const sortData = (data: any[]) => {
-  return [...data].sort((a, b) => {
-    if (a.dict < b.dict) return -1;
-    if (a.dict > b.dict) return 1;
-    return a.id - b.id;
-  });
+    return [...data].sort((a, b) => {
+      if (a.dict < b.dict) return -1;
+      if (a.dict > b.dict) return 1;
+      return a.id - b.id;
+    });
 };
-
-  const filterData = (data: any[]) => {
-    if (!filterEnabled) return data;
-    if (!currentDict) return data;
-    return data.filter(item => item.dict?.trim() === currentDict?.trim());
-  };
-
 
   useEffect(() => {
     const fetchMarkers = async () => {
+      setLoading(true);
       try {
-        const response = await fetch('/api/admin/markers');
+        let url = '/api/admin/markers'
+        if (filterEnabled && selectedDict)
+          url += `?dict_name=${encodeURIComponent(selectedDict)}`
+        
+        // Формируем URL: если фильтр включен, добавляем query-параметр
+
+        const response = await fetch(url);
         const data = await response.json();
 
         setRawData(data || []);
@@ -46,8 +47,16 @@ function TableBlock({currentDict, filterEnabled}: Props) {
     };
 
     fetchMarkers();
-  }, []);
+  }, [selectedDict]);
   
+    if (loading) {
+      return (
+        <div className="table-container empty">
+          <div className="empty-text">Загрузка данных...</div>
+        </div>
+      );
+    }
+
     if (rawData.length === 0) {
       return (
         <div className="table-container empty">
@@ -78,8 +87,7 @@ function TableBlock({currentDict, filterEnabled}: Props) {
   };
 
     const normalized = normalizeData(rawData);
-    const filtered = filterData(normalized);
-    const tableData = sortData(filtered);
+    const tableData = sortData(normalized);
 
     if (tableData.length === 0) {
       return (
