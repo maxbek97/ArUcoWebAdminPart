@@ -9,7 +9,7 @@ type Props = {
 };
 
 const AddMarkerModal: React.FC<Props> = ({ dictionaries, onClose }) => {
-    const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [dict, setDict] = useState("");
   useEffect(() => {
   if (dictionaries.length > 0 && dict === "") {
@@ -23,45 +23,38 @@ const AddMarkerModal: React.FC<Props> = ({ dictionaries, onClose }) => {
   const [value, setValue] = useState("");
 
   // model mode
-  const [source, setSource] = useState("");
+  const [file, setFile] = useState<File | null>(null); // Состояние для файла
   const numberRegex = /^-?\d*\.?\d*$/;
   const [x, setX] = useState("");
   const [y, setY] = useState("");
   const [z, setZ] = useState("");
 
 const handleSubmit = async () => {
-    let payload;
-      if (type === "text") {
-    payload = {
-      dictionary_name: dict,
-      marker_id: Number(identifier),
-      payload_type: "text",
-      payload: {
-        value,
-      },
-    };
-  } else {
-    payload = {
-      dictionary_name: dict,
-      marker_id: Number(identifier),
-      payload_type: "model",
-      payload: {
-        src: source, // 🔥 важно: не source, а src
-        start_position: [
-          Number(x),
-          Number(y),
-          Number(z),
-        ], // 🔥 массив, не объект
-      },
-    };
-  }
+  const formData = new FormData();
+  formData.append("dictionary_name", dict);
+  formData.append("marker_id", identifier);
+  formData.append("payload_type", type);
+  let payloadData = {};
+    if (type === "text") {
+      payloadData = { value };
+    }
+    else {
+      payloadData = {
+        start_position: [Number(x), Number(y), Number(z)],
+      };
+      if (file) {
+        formData.append("file", file);
+      }
+    }
+
+    // Сериализуем payload в строку, как ожидает бэкенд
+    formData.append("payload", JSON.stringify(payloadData));
 
   try {
-    console.log("SENDING:", payload);
+    console.log("SENDING FORMDATA:");
     const res = await fetch("/api/admin/markers", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: formData,
     });
 
     if (!res.ok) {
@@ -69,7 +62,6 @@ const handleSubmit = async () => {
       setToast({ message: err.detail || "Ошибка сервера", type: "error" });
       return;
     }
-
 
     setToast({ message: "Marker created", type: "success" });
     setTimeout(() => {
@@ -140,10 +132,15 @@ const handleSubmit = async () => {
             {type === "model" && (
                 <>
             <div className="form-group">
-                <label>Источник:</label>
+                <label>Файл модели:</label>
                 <input
-                value={source}
-                onChange={(e) => setSource(e.target.value)}
+                  type="file"
+                  accept=".glb"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setFile(e.target.files[0]);
+                      }
+                  }}
                 />
             </div>
 
@@ -161,7 +158,7 @@ const handleSubmit = async () => {
                         }} />
                     </div>
                     <div className="coord-tile">
-                                                <input
+                        <input
                         required
                         placeholder="Y"
                         value={y}
