@@ -59,7 +59,6 @@ const Header: React.FC<HeaderProps> = ({selectedDict, setSelectedDict, setFilter
 
 
 	const handleAction = async () => {
-		if (selectedDict === currentDict) return;
 	try {
 		const response = await fetch('/api/admin/switch-dictionary', {
 		method: 'POST',
