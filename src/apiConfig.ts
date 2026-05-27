@@ -1,0 +1,4 @@
+export const API_BASE = "/api";
+
+export const AUTH_API = `${API_BASE}/auth`;
+export const ADMIN_API = `${API_BASE}/admin`;

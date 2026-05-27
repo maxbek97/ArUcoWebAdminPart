@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import './AddMarkerModal.css'
 import './GlobalMarkerModal.css'
 import Toast from "../Toast";
+import { ADMIN_API } from "../../../../apiConfig";
 
 type Props = {
   dictionaries: string[];
@@ -52,8 +53,13 @@ const handleSubmit = async () => {
 
   try {
     console.log("SENDING FORMDATA:");
-    const res = await fetch("/api/admin/markers", {
+    const accessToken = localStorage.getItem("accessToken");
+
+    const res = await fetch(`${ADMIN_API}/markers`, {
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
       body: formData,
     });
 
@@ -67,7 +73,7 @@ const handleSubmit = async () => {
     setTimeout(() => {
     onClose();
   window.location.reload();
-}, 2000); // 2 секунды
+}, 2000);
 
   } catch (e: any) {
     setToast({ message: e.message || "Ошибка сервера", type: "error" });
@@ -168,7 +174,7 @@ const handleSubmit = async () => {
                         }} />
                     </div>
                     <div className="coord-tile">
-                                                <input
+                      <input
                         required
                         placeholder="Z"
                         value={z}

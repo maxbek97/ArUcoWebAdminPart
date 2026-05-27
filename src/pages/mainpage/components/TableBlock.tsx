@@ -2,7 +2,7 @@ import React from "react";
 import '../Tableblock.css';
 import { useState, useEffect } from "react";
 import MarkerModal from "./modals/MarkerModal";
-
+import { ADMIN_API } from "../../../apiConfig";
 type Props = {
   selectedDict: string;
   filterEnabled: boolean;
@@ -28,13 +28,19 @@ function TableBlock({selectedDict, filterEnabled}: Props) {
     const fetchMarkers = async () => {
       setLoading(true);
       try {
-        let url = '/api/admin/markers'
+        const accessToken = localStorage.getItem("accessToken");
+        let url = `${ADMIN_API}/markers`;
+
         if (filterEnabled && selectedDict)
           url += `?dict_name=${encodeURIComponent(selectedDict)}`
         
-        // Формируем URL: если фильтр включен, добавляем query-параметр
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
 
-        const response = await fetch(url);
         const data = await response.json();
 
         setRawData(data || []);
