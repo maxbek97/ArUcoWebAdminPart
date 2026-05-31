@@ -1,0 +1,114 @@
+.authorization-section {
+  /* Фиксируем высоту ровно по экрану */
+  height: 100vh; 
+  width: 100%;
+  
+  /* Убираем скролл, если контент вдруг решит вылезти */
+  overflow: hidden; 
+  
+  background-color: #ece8e1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  /* Используем box-sizing, чтобы padding не увеличивал размер блока */
+  box-sizing: border-box; 
+  padding: 20px;
+}
+
+.authorization-container {
+  width: 100%;
+  max-width: 450px;
+  /* Добавим небольшую анимацию появления, раз это отдельная страница */
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Если форма на маленьких экранах (телефонах) не влезает по высоте, 
+   разрешаем скролл только для мобилок */
+@media (max-height: 700px) {
+  .authorization-section {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+    padding: 100px 20px; /* Возвращаем отступы для мобилок */
+  }
+}
+
+.authorization-card {
+  background-color: #ffffff;
+  padding: 50px;
+  box-shadow: 20px 20px 0px rgba(67, 54, 243, 0.1);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.authorization-title {
+  font-size: 32px;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #0f1923;
+  margin-bottom: 10px;
+}
+
+.authorization-subtitle {
+  color: #7e7e7e;
+  margin-bottom: 30px;
+  font-size: 14px;
+}
+
+.authorization-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 800;
+  color: #333;
+  letter-spacing: 1px;
+}
+
+.input-group input {
+  padding: 15px;
+  background-color: #979797;
+  border: none;
+  border-bottom: 2px solid transparent;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+  border-bottom: 2px solid #1382eb;
+  color: inherit
+}
+
+.authorization-footer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.login-prompt {
+  margin-top: 30px;
+  font-size: 13px;
+  color: #7e7e7e;
+}
+
+.login-prompt a {
+  color: #1382eb;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+}

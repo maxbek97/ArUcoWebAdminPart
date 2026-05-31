@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Mainpage from './pages/mainpage/mainpage';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Authorization from './pages/authorizationpage/Authorization';
 
 function App() {
 return (
@@ -11,8 +12,13 @@ return (
         <main>
           <Routes>
             {/* Главная страница */}
-            <Route path="/" element={
+            <Route path="/control-panel" element={
                 <Mainpage />
+            } />
+
+            {/* Страница авторизации */}
+            <Route path="/" element={
+              <Authorization/>
             } />
           </Routes>
         </main>

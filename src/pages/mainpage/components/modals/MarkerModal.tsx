@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./GlobalMarkerModal.css"
 import "./CRUDMarkerModal.css"
 import Toast from "../Toast";
-
+import { ADMIN_API } from "../../../../apiConfig";
 
 type Props = {
   dictionary: string;
@@ -17,7 +17,7 @@ const MarkerModal: React.FC<Props> = ({ dictionary, markerId, onClose }) => {
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [toast, setToast] = useState<any>(null);
     const [type, setType] = useState<"text" | "model">("text");
-  // поля
+
     const [value, setValue] = useState("");
     const [source, setSource] = useState("");
     const [file, setFile] = useState<File | null>(null);
@@ -38,13 +38,22 @@ const MarkerModal: React.FC<Props> = ({ dictionary, markerId, onClose }) => {
       }
     };
 
-  // 🔥 загрузка маркера
+
   useEffect(() => {
     const fetchMarker = async () => {
       try {
+        const accessToken = localStorage.getItem("accessToken");
+
         const res = await fetch(
-          `/api/admin/markers/${dictionary}/${markerId}`
+          `${ADMIN_API}/markers/${dictionary}/${markerId}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
         );
+
         const data = await res.json();
 
         setMarker(data);
@@ -69,11 +78,10 @@ const MarkerModal: React.FC<Props> = ({ dictionary, markerId, onClose }) => {
     fetchMarker();
   }, [dictionary, markerId]);
 
-  // 🔥 UPDATE
+  // UPDATE
   const handleUpdate = async () => {
     const formData = new FormData();
 
-    // Поля для MarkerForm (Depends)
     formData.append("dictionary_name", dictionary);
     formData.append("marker_id", String(markerId));
     formData.append("payload_type", type);
@@ -97,10 +105,18 @@ const MarkerModal: React.FC<Props> = ({ dictionary, markerId, onClose }) => {
     formData.append("payload", JSON.stringify(payloadData));
 
     try {
-      const res = await fetch(`/api/admin/markers/?dictionary_name=${dictionary}&marker_id=${markerId}`, {
-        method: "PATCH",
-        body: formData,
-      });
+      const accessToken = localStorage.getItem("accessToken");
+
+      const res = await fetch(
+        `${ADMIN_API}/markers/?dictionary_name=${encodeURIComponent(dictionary)}&marker_id=${markerId}`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: formData,
+        }
+      );
 
       if (!res.ok) {
         const err = await res.json();
@@ -120,14 +136,21 @@ const MarkerModal: React.FC<Props> = ({ dictionary, markerId, onClose }) => {
     }
   };
 
-  // 🔥 DELETE
+  // DELETE
   const handleDelete = async () => {
 
     try {
-        const res = await fetch(
-        `/api/admin/markers/?dictionary_name=${dictionary}&marker_id=${markerId}`,
-        { method: "DELETE" }
-        );
+      const accessToken = localStorage.getItem("accessToken");
+
+      const res = await fetch(
+        `${ADMIN_API}/markers/?dictionary_name=${encodeURIComponent(dictionary)}&marker_id=${markerId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
 
       if (!res.ok) {
         const err = await res.json();
