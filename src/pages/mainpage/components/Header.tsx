@@ -4,6 +4,7 @@ import ActionButton from './ActionButton';
 import '../Header.css';
 import AddMarkerModal from './modals/AddMarkerModal';
 import { ADMIN_API } from "../../../apiConfig";
+import { authFetch } from '../../../jwt';
 
 type HeaderProps = {
   selectedDict: string;
@@ -22,14 +23,12 @@ const Header: React.FC<HeaderProps> = ({selectedDict, setSelectedDict, setFilter
   useEffect(() => {
     const fetchDictionaries = async () => {
       try {
-        const accessToken = localStorage.getItem("accessToken");
-        console.log(accessToken);
-        const response = await fetch(`${ADMIN_API}/dictionaries`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-      });
+        const response = await authFetch(
+          `${ADMIN_API}/dictionaries`,
+          {
+            method: "GET",
+          }
+        );
         const data = await response.json();
 
         setDictionaries(data.dict_names || []);
@@ -68,16 +67,18 @@ const Header: React.FC<HeaderProps> = ({selectedDict, setSelectedDict, setFilter
 
 	const handleAction = async () => {
 	try {
-    const accessToken = localStorage.getItem("accessToken");
-
-    const response = await fetch(`${ADMIN_API}/switch-dictionary`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ dict_name: selectedDict }),
-    });
+    const response = await authFetch(
+      `${ADMIN_API}/switch-dictionary`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          dict_name: selectedDict,
+        }),
+      }
+    );
 
 		if (!response.ok) {
 		throw new Error("Ошибка переключения словаря");

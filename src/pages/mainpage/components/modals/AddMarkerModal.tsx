@@ -3,6 +3,7 @@ import './AddMarkerModal.css'
 import './GlobalMarkerModal.css'
 import Toast from "../Toast";
 import { ADMIN_API } from "../../../../apiConfig";
+import { authFetch } from "../../../../jwt";
 
 type Props = {
   dictionaries: string[];
@@ -53,16 +54,13 @@ const handleSubmit = async () => {
 
   try {
     console.log("SENDING FORMDATA:");
-    const accessToken = localStorage.getItem("accessToken");
-
-    const res = await fetch(`${ADMIN_API}/markers`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: formData,
-    });
-
+    const res = await authFetch(
+      `${ADMIN_API}/markers`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
     if (!res.ok) {
       const err = await res.json();
       setToast({ message: err.detail || "Ошибка сервера", type: "error" });
@@ -134,7 +132,7 @@ const handleSubmit = async () => {
             )}
 
 
-            {/* MODEL MODE (если понадобится потом) */}
+            {/* MODEL MODE если понадобится потом */}
             {type === "model" && (
                 <>
             <div className="form-group">

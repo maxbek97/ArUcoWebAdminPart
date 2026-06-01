@@ -3,6 +3,7 @@ import '../Tableblock.css';
 import { useState, useEffect } from "react";
 import MarkerModal from "./modals/MarkerModal";
 import { ADMIN_API } from "../../../apiConfig";
+import { authFetch } from "../../../jwt";
 type Props = {
   selectedDict: string;
   filterEnabled: boolean;
@@ -28,17 +29,13 @@ function TableBlock({selectedDict, filterEnabled}: Props) {
     const fetchMarkers = async () => {
       setLoading(true);
       try {
-        const accessToken = localStorage.getItem("accessToken");
         let url = `${ADMIN_API}/markers`;
 
         if (filterEnabled && selectedDict)
           url += `?dict_name=${encodeURIComponent(selectedDict)}`
         
-        const response = await fetch(url, {
+        const response = await authFetch(url, {
           method: "GET",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
         });
 
         const data = await response.json();

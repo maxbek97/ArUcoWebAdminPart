@@ -3,6 +3,7 @@ import "./GlobalMarkerModal.css"
 import "./CRUDMarkerModal.css"
 import Toast from "../Toast";
 import { ADMIN_API } from "../../../../apiConfig";
+import { authFetch } from "../../../../jwt";
 
 type Props = {
   dictionary: string;
@@ -42,15 +43,10 @@ const MarkerModal: React.FC<Props> = ({ dictionary, markerId, onClose }) => {
   useEffect(() => {
     const fetchMarker = async () => {
       try {
-        const accessToken = localStorage.getItem("accessToken");
-
-        const res = await fetch(
+        const res = await authFetch(
           `${ADMIN_API}/markers/${dictionary}/${markerId}`,
           {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
+            method: "GET"
           }
         );
 
@@ -105,18 +101,14 @@ const MarkerModal: React.FC<Props> = ({ dictionary, markerId, onClose }) => {
     formData.append("payload", JSON.stringify(payloadData));
 
     try {
-      const accessToken = localStorage.getItem("accessToken");
-
-      const res = await fetch(
+      const res = await authFetch(
         `${ADMIN_API}/markers/?dictionary_name=${encodeURIComponent(dictionary)}&marker_id=${markerId}`,
         {
           method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
           body: formData,
         }
       );
+      
 
       if (!res.ok) {
         const err = await res.json();
@@ -140,17 +132,12 @@ const MarkerModal: React.FC<Props> = ({ dictionary, markerId, onClose }) => {
   const handleDelete = async () => {
 
     try {
-      const accessToken = localStorage.getItem("accessToken");
-
-      const res = await fetch(
-        `${ADMIN_API}/markers/?dictionary_name=${encodeURIComponent(dictionary)}&marker_id=${markerId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+        const res = await authFetch(
+          `${ADMIN_API}/markers/?dictionary_name=${encodeURIComponent(dictionary)}&marker_id=${markerId}`,
+          {
+            method: "DELETE"
+          }
+        );
 
       if (!res.ok) {
         const err = await res.json();
